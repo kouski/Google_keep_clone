@@ -1,16 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans:400,500&display=swap"></link>
     <title>Google keep clone</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <main>
-        <header>
-            <img class="header-logo" src="https://www.gstatic.com/images/branding/product/1x/keep_48dp.png" alt="">
-        </header>
+      <header>
+        <img
+          class="header-logo"
+          src="https://www.gstatic.com/images/branding/product/1x/keep_48dp.png"
+          alt="logo"
+        />
+        <h2 class="header-title">Keep</h2>
+      </header>
+      <div id="form-container">
+        <form id="form" autocomplete="off">
+          <input type="text" id="note-title" placeholder="Title" />
+          <input type="text" id="note-text" placeholder="Take a note..." />
+          <div id="form-buttons">
+            <button id="submit-button" type="submit">Submit</button>
+            <button id="form-close-button" type="button">Close</button>
+          </div>
+        </form>
+      </div>
+      <div id="notes">
+        <div id="placeholder">
+          <img id="placeholder-logo" src="https://icon.now.sh/lightbulb_outline" alt="icono"/>
+          <p id="placeholder-text">Notes you add appear here</p>
+        </div>
+      </div>
     </main>
-</body>
+    <script src="app.js"></script>
+  </body>
+  </body>
 </html>
