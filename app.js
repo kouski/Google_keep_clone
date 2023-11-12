@@ -211,6 +211,8 @@ class App {
       )
       .join("");
   }
+
+ 
 }
 
-new App();
+const APP = new App(); 
