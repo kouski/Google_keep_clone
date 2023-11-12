@@ -1,6 +1,6 @@
 class App {
   constructor() {
-    this.notes = [];
+    this.notes = JSON.parse(localStorage.getItem('notes')) || [];
     this.title = "";
     this.text = "";
     this.id = "";
@@ -16,8 +16,9 @@ class App {
     this.$modalTitle = document.querySelector(".modal-title");
     this.$modalText = document.querySelector(".modal-text");
     this.$modalCloseButton = document.querySelector(".modal-close-button");
-    this.$colorTooltip = document.querySelector('#color-tooltip');
+    this.$colorTooltip = document.querySelector("#color-tooltip");
 
+    this.render()
     this.addEventListeners();
   }
 
@@ -26,30 +27,31 @@ class App {
       this.handleFormClick(event);
       this.selectNote(event);
       this.openModal(event);
+      this.deleteNote(event);
     });
 
-    document.body.addEventListener('mouseover', event => {
-      this.openTooltip(event);  
-   });
+    document.body.addEventListener("mouseover", (event) => {
+      this.openTooltip(event);
+    });
 
-   document.body.addEventListener('mouseout', event => {
-    this.closeTooltip(event);  
- });
+    document.body.addEventListener("mouseout", (event) => {
+      this.closeTooltip(event);
+    });
 
- this.$colorTooltip.addEventListener('mouseover', function() {
-  this.style.display = 'flex';  
-})
+    this.$colorTooltip.addEventListener("mouseover", function () {
+      this.style.display = "flex";
+    });
 
-this.$colorTooltip.addEventListener('mouseout', function() {
-   this.style.display = 'none'; 
-})
+    this.$colorTooltip.addEventListener("mouseout", function () {
+      this.style.display = "none";
+    });
 
-this.$colorTooltip.addEventListener('click', event => {
-  const color = event.target.dataset.color; 
-  if (color) {
-    this.editNoteColor(color);  
-  }
-})
+    this.$colorTooltip.addEventListener("click", (event) => {
+      const color = event.target.dataset.color;
+      if (color) {
+        this.editNoteColor(color);
+      }
+    });
 
     this.$form.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -103,6 +105,8 @@ this.$colorTooltip.addEventListener('click', event => {
   }
 
   openModal(event) {
+    if (event.target.matches('.toolbar-delete')) return;
+
     if (event.target.closest(".note")) {
       this.$modal.classList.toggle("open-modal");
       this.$modalTitle.value = this.title;
@@ -112,7 +116,7 @@ this.$colorTooltip.addEventListener('click', event => {
 
   closeModal(event) {
     this.editNote();
-    this.$modal.classList.toggle('open-modal');
+    this.$modal.classList.toggle("open-modal");
   }
 
   addNote({ title, text }) {
@@ -123,7 +127,7 @@ this.$colorTooltip.addEventListener('click', event => {
       id: this.notes.length > 0 ? this.notes[this.notes.length - 1].id + 1 : 1,
     };
     this.notes = [...this.notes, newNote];
-    this.displayNotes();
+    this.render();
     this.closeForm();
   }
 
@@ -133,14 +137,14 @@ this.$colorTooltip.addEventListener('click', event => {
     this.notes = this.notes.map((note) =>
       note.id === Number(this.id) ? { ...note, title, text } : note
     );
-    this.displayNotes();
+    this.render();
   }
 
   editNoteColor(color) {
-    this.notes = this.notes.map(note =>
+    this.notes = this.notes.map((note) =>
       note.id === Number(this.id) ? { ...note, color } : note
     );
-    this.displayNotes();
+    this.render();
   }
 
   selectNote(event) {
@@ -152,19 +156,36 @@ this.$colorTooltip.addEventListener('click', event => {
     this.id = $selectedNote.dataset.id;
   }
 
-  openTooltip(event){
-    if (!event.target.matches('.toolbar-color')) return;
+  deleteNote(event) {
+    event.stopPropagation();
+    if (!event.target.matches(".toolbar-delete")) return;
+    const id = event.target.dataset.id;
+    this.notes = this.notes.filter((note) => note.id !== Number(id));
+    this.render();
+  }
+
+  render() {
+    this.saveNotes();
+    this.displayNotes();  
+  }
+
+  saveNotes() {
+    localStorage.setItem('notes', JSON.stringify(this.notes))  
+  }
+
+  openTooltip(event) {
+    if (!event.target.matches(".toolbar-color")) return;
     this.id = event.target.dataset.id;
     const noteCoords = event.target.getBoundingClientRect();
     const horizontal = noteCoords.left;
-    const vertical = window.scrollY -22;
+    const vertical = window.scrollY - 22;
     this.$colorTooltip.style.transform = `translate(${horizontal}px, ${vertical}px)`;
-    this.$colorTooltip.style.display = 'flex';
+    this.$colorTooltip.style.display = "flex";
   }
 
-  closeTooltip(event){
-    if (!event.target.matches('.toolbar-color')) return;
-    this.$colorTooltip.style.display = 'none';
+  closeTooltip(event) {
+    if (!event.target.matches(".toolbar-color")) return;
+    this.$colorTooltip.style.display = "none";
   }
 
   displayNotes() {
@@ -181,8 +202,8 @@ this.$colorTooltip.addEventListener('click', event => {
             <div class="note-text">${note.text}</div>
             <div class="toolbar-container">
               <div class="toolbar">
-                <img class="toolbar-color" data-id=${note.id} src="https://icon.now.sh/palette">
-                <img class="toolbar-delete" src="https://icon.now.sh/delete">
+                <i class="toolbar-color fa fa-map fa-lg" data-id=${note.id}></i>
+                <i class="toolbar-delete fa fa-trash fa-lg" data-id=${note.id}></i>
               </div>
             </div>
           </div>
