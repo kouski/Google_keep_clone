@@ -192,6 +192,7 @@ class App {
     const hasNotes = this.notes.length > 0;
     this.$placeholder.style.display = hasNotes ? "none" : "flex";
 
+
     this.$notes.innerHTML = this.notes
       .map(
         (note) => `
